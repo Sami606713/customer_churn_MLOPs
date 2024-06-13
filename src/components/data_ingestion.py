@@ -12,6 +12,9 @@ def inisiate_data_ingestion():
 
     logging.info("getting the data")
     data=get_data()
+
+    # drop the Customer ID
+    data.drop(columns=["customerID"],inplace=True)
     logging.info(f"Saving data in this path {raw_path}")
     data.to_csv(raw_path,index=False)
     logging.info("Raw Data Save Successfully")
