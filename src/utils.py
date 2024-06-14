@@ -1,4 +1,5 @@
 import pandas as pd
+import pickle as pkl
 import os
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -17,3 +18,7 @@ def get_data():
         return data
     except Exception as e:
         return e
+
+def save_file(file_path,obj):
+    with open(file_path,"wb")as f:
+        pkl.dump(obj=obj,file=f)
