@@ -1,0 +1,15 @@
+artifact_uri: file:///E:/Root-Folder/projects_mlops/customer_churn/mlruns/0/684aacf864064e8abd4f2d36d2997ade/artifacts
+end_time: 1718533815436
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 684aacf864064e8abd4f2d36d2997ade
+run_name: Lr
+run_uuid: 684aacf864064e8abd4f2d36d2997ade
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1718533799172
+status: 3
+tags: []
+user_id: Laptop House
