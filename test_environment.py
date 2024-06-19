@@ -12,4 +12,4 @@ if __name__=="__main__":
     train_array,test_array,_=inisiate_data_transformation(train_path=train_data_path,test_path=test_data_path)
 
     # Inisiate model tarining
-    inisiate_model_training(train_array=train_array,test_array=test_array)
+    # inisiate_model_training(train_array=train_array,test_array=test_array)
