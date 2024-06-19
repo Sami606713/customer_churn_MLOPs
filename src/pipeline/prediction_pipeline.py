@@ -1,7 +1,7 @@
 import pickle as pkl
 
 def load_processor():
-    with open('models/preprocess.pkl','rb') as f:
+    with open('models/processor.pkl','rb') as f:
         processor=pkl.load(f)
     return processor
 
@@ -17,6 +17,6 @@ def prediction(data):
 
     # Do the predicton
     model=load_model()
-    y_pre=model.predict(transform_data)
+    y_pred=model.predict(transform_data)
 
     return y_pred

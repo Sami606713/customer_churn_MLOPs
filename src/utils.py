@@ -69,31 +69,33 @@ def model_evulation(x_train,y_train,x_test,y_test,model_dic,params):
         
         # grid_search=RandomizedSearchCV(estimator=model, param_distributions=param_grid, 
         #                                 scoring='accuracy', cv=5, verbose=1, n_jobs=-1,n_iter=50)
-        grid_search=GridSearchCV(estimator=model, param_grid=param_grid, 
-                                        scoring='accuracy', cv=5, verbose=1, n_jobs=-1)
+        # grid_search=GridSearchCV(estimator=model, param_grid=param_grid, 
+                                        # scoring='accuracy', cv=5, verbose=1, n_jobs=-1)
 
-        # model.fit(x_train,y_train)
-        grid_search.fit(x_train,y_train)
+        model.fit(x_train,y_train)
+        # grid_search.fit(x_train,y_train)
 
-        best_model=grid_search.best_estimator_
+        # best_model=grid_search.best_estimator_
 
-        # y_pred=model.predict(x_test)
-        y_pred=grid_search.predict(x_test)
+        y_pred=model.predict(x_test)
+        # y_pred=grid_search.predict(x_test)
 
         logging.info(f'Cross Validation of the model {model_name} on training data')
-        train_score=cross_val_score(best_model,x_train,y_train,cv=5,scoring="accuracy",n_jobs=-1).mean()
+        train_score=cross_val_score(model,x_train,y_train,cv=5,scoring="accuracy",n_jobs=-1).mean()
             
         logging.info(f'Cross Validation of the model {model_name} on testing data')
-        test_score=cross_val_score(best_model,x_test,y_test,cv=5,scoring="accuracy",n_jobs=-1).mean()
+        test_score=cross_val_score(model,x_test,y_test,cv=5,scoring="accuracy",n_jobs=-1).mean()
             
         logging.info(f'Final report of the model {model_name}')
         full_report=generate_report(actual=y_test,pre=y_pred)
 
         # Store the best parameters
         best_params[model_name] = grid_search.best_params_
+
         
 
         report[model_name]={
+                'model':model
                 "train_score":train_score,
                 "test_score":test_score,
                 "full_report":full_report,
