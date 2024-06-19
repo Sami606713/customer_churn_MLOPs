@@ -25,7 +25,7 @@ def inisiate_model_training(train_array,test_array):
 
     # make the models list
     models={
-        "LR":LogisticRegression(verbose=1,n_jobs=-1),
+        "Lr":LogisticRegression(verbose=1,n_jobs=-1),
         "Dt":DecisionTreeClassifier(),
         "RF":RandomForestClassifier(verbose=1,n_jobs=-1),
         "xgboost":XGBClassifier(),  
@@ -34,7 +34,7 @@ def inisiate_model_training(train_array,test_array):
 
     # Paramters Dict
     params={
-        "LR":{
+        "Lr":{
             'penalty':['l2','l1'],
             'C':[0.1,0.01,0.001],
             'class_weight':["balanced",None],
