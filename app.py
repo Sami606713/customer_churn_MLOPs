@@ -87,7 +87,7 @@ if st.button("Predict"):
     st.dataframe(df)
     st.success("prediction")
     result=prediction(df)
-    st.success("result")
+    st.success(result)
     
     
 

@@ -91,6 +91,7 @@ def model_evulation(x_train,y_train,x_test,y_test,model_dic,params):
 
         # Store the best parameters
         best_params[model_name] = grid_search.best_params_
+
         
 
         report[model_name]={
