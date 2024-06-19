@@ -85,9 +85,13 @@ with col3:
 if st.button("Predict"):
     df=pd.DataFrame(dic,index=[0])
     st.dataframe(df)
-    st.success("prediction")
+    # st.success("prediction")
     result=prediction(df)
-    st.success(result)
+    if result[0]==0:
+        # st.success(result[0])
+        st.success("Customer can't leave the platform")
+    elif(result[0]==1):
+        st.error("Customer can leave the platform")
     
     
 
