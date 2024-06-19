@@ -1,50 +1,85 @@
 # Customer Churn Prediction 
-- The goal of this project is to identify those customer who can leave and those who can't leave.
+The goal of this project is to identify customers who are likely to leave (churn) and those who are not.
 
-# Project Achieving
+## Project Achievements
 - Data Collection
-- Data Transformation(like Scaliing,Encoding,or handling missing values)
+- Data Transformation (like Scaling, Encoding, or Handling Missing Values)
 
+## Data Collection
+- The first step is to collect the data from the provided URL and store it in a specific location.
+  [Data URL](https://raw.githubusercontent.com/IBM/telco-customer-churn-on-icp4d/master/data/Telco-Customer-Churn.csv)
+- After collecting the data, the next step is to split the data into training and test sets.
 
-# Data Collection
-- First Step is to collect the data form `URL` and store them in a speccific location
-[Data URL](https://raw.githubusercontent.com/IBM/telco-customer-churn-on-icp4d/master/data/Telco-Customer-Churn.csv)
-
-- After collecting data next step i can do is to split the data into train and test set.
-
-# Data Transformation
-- After spliting the data i can get the train and test data so that i can prepare the data for model training pipeline.
-- Building pipelines for data transforamtion.
-    - `Numerical pipeline`
+## Data Transformation
+- After splitting the data, we prepare the train and test datasets for the model training pipeline.
+- Building pipelines for data transformation:
+    - **Numerical Pipeline**
         - Scaling Numerical Data
-    - `Categorical pipeline`
+    - **Categorical Pipeline**
         - Encoding Categorical Data
-- Building Transformer
-    - After building pipelines combine all the pipeline using `ColumnsTransformers`
+- Building the Transformer:
+    - After building the pipelines, combine them using `ColumnTransformer`.
 
-# Model Building
-- In this step i can get the transform data and train o different models i-e.
+## Model Building
+- In this step, we use the transformed data to train different models, such as:
+```python
+models = {
+    "Lr": LogisticRegression(verbose=1, n_jobs=-1),
+    "Dt": DecisionTreeClassifier(),
+    "RF": RandomForestClassifier(verbose=1, n_jobs=-1),
+    "xgboost": XGBClassifier(),  
+    "knn": KNeighborsClassifier(n_jobs=-1)  
+}
 ```
-models={
-        "Lr":LogisticRegression(verbose=1,class_weight='balanced',solver='liblinear',n_jobs=-1),
-        "Dt":DecisionTreeClassifier(max_depth=10,              
-                                    min_samples_split=10,     
-                                    min_samples_leaf=4,       
-                                    max_features='sqrt',      
-                                    min_impurity_decrease=0.01,
-                                    random_state=43,          
-                                    class_weight='balanced'),
-        "RF":RandomForestClassifier(class_weight='balanced'),
-        "xgboost":XGBClassifier(),  
-        "knn":KNeighborsClassifier(n_neighbors=5,n_jobs=-1)  
+- Models Paramters
+```python
+params = {
+    "Lr": {
+        'penalty': ['l2', 'l1'],
+        'C': [0.1, 0.01, 0.001],
+        'class_weight': ["balanced", None],
+        'solver': ['newton-cholesky', 'liblinear']
+    },
+    "Dt": {
+        "criterion": ['gini', 'entropy', 'log_loss'],
+        'max_depth': [10, 20, 30, 50],
+        'min_samples_split': [2, 3, 4],
+        'min_samples_leaf': [1, 2],
+        'max_leaf_nodes': [2, None],
+        'class_weight': ['balanced', None, 'balanced_subsample']
+    },
+    "RF": {
+        'n_estimators': [100, 200, 300],
+        'criterion': ['gini', 'entropy', 'log_loss'],
+        'max_depth': [10, 20, 30, 50],
+        'min_samples_split': [2, 3, 4],
+        'min_samples_leaf': [1, 2],
+        'bootstrap': [True, False],
+        'oob_score': [True, False],
+        'class_weight': ['balanced', None, 'balanced_subsample']
+    },
+    "xgboost": {
+        "n_estimators": [50, 100, 200],
+        "max_depth": [3, 5, 10],
+        "learning_rate": [0.01, 0.1, 0.2],
+        "subsample": [0.6, 0.8, 1.0],
+        "colsample_bytree": [0.6, 0.8, 1.0],
+        "gamma": [0, 0.1, 0.2]
+    },
+    "knn": {
+        'n_neighbors': [5, 7, 9, 15],
+        'weights': ['uniform', 'distance']
     }
+}
 ```
-- Second i can check the result of all the model and based on `Recall` b/c in this project `Recall` is most important i can get the top3 model whose recall is high and make a big model using `VotingClassifier`
+
+# Use Case
+- First install `requirement.txt` file.
+python```
+pip install -r requirements.txt
 ```
-estimator=[(model[0], model_dic[model[0]]) for model in sorted_model]
-    # print(estimator)
-    voting_clf = VotingClassifier(estimators=estimator,voting='soft')
-    logging.info("voting successfull")
-    voting_clf.fit(x_train,y_train)
+
+- Second run the webapp.
+```python
+streamlit run app.py
 ```
-- At last i can save the model so the i can use further
