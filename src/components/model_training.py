@@ -87,8 +87,7 @@ def inisiate_model_training(train_array,test_array):
 
     # Save the model
     best_model=models[m]
-    # set the model and report path
-    model_path=os.path.join("models",f"{best_model[:-2]}.pkl")
+    
     save_file(file_path= model_path,obj=best_model)
 
 

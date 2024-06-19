@@ -1,10 +1,11 @@
 import pandas as pd
 import pickle as pkl
+import yaml
 # import mlflow
 # import mlflow.sklearn
 import json
 import numpy as np
-from sklearn.model_selection import cross_val_score,GridSearchCV
+from sklearn.model_selection import cross_val_score,GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import accuracy_score,f1_score,precision_score,recall_score,confusion_matrix,classification_report
 import os
 import logging
@@ -33,6 +34,10 @@ def get_data():
     except Exception as e:
         return e
 
+def save_params(parm_file,path):
+    with open(path, 'w') as yaml_file:
+        yaml.dump(parm_file, yaml_file)
+
 def save_file(file_path,obj):
     with open(file_path,"wb")as f:
         pkl.dump(obj=obj,file=f)
@@ -58,8 +63,12 @@ def generate_report(actual,pre):
 def model_evulation(x_train,y_train,x_test,y_test,model_dic,params):
     logging.info("Itrating on model dic")
     report={}
+    best_params={}
     for model_name,model in model_dic.items():
         param_grid=params.get(model_name,{})
+        
+        # grid_search=RandomizedSearchCV(estimator=model, param_distributions=param_grid, 
+        #                                 scoring='accuracy', cv=5, verbose=1, n_jobs=-1,n_iter=50)
         grid_search=GridSearchCV(estimator=model, param_grid=param_grid, 
                                         scoring='accuracy', cv=5, verbose=1, n_jobs=-1)
 
@@ -80,8 +89,9 @@ def model_evulation(x_train,y_train,x_test,y_test,model_dic,params):
         logging.info(f'Final report of the model {model_name}')
         full_report=generate_report(actual=y_test,pre=y_pred)
 
-            # Generate the classification report of the model
-        # class_report = classification_report(y_test, y_pred, output_dict=True)
+        # Store the best parameters
+        best_params[model_name] = grid_search.best_params_
+        
 
         report[model_name]={
                 "train_score":train_score,
@@ -89,7 +99,10 @@ def model_evulation(x_train,y_train,x_test,y_test,model_dic,params):
                 "full_report":full_report,
                 # "class_report":class_report
         }
-    
+
+    # Save the parameters
+    save_params(parm_file=best_params,path=os.path.join("models",f"best_params.yml"))
+
     # Sorting the report dictionary based on test_score
     sorted_report = dict(sorted(report.items(), key=lambda item: item[1]['test_score'], reverse=True))
     
