@@ -1,11 +1,11 @@
 import pandas as pd
 import pickle as pkl
-import mlflow
-import mlflow.sklearn
+# import mlflow
+# import mlflow.sklearn
 import json
 import numpy as np
-from sklearn.model_selection import cross_val_score
-from sklearn.metrics import accuracy_score,f1_score,precision_score,recall_score,confusion_matrix
+from sklearn.model_selection import cross_val_score,GridSearchCV
+from sklearn.metrics import accuracy_score,f1_score,precision_score,recall_score,confusion_matrix,classification_report
 import os
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -55,42 +55,45 @@ def generate_report(actual,pre):
 
     return result
 
-def model_evulation(x_train,y_train,x_test,y_test,model_dic):
+def model_evulation(x_train,y_train,x_test,y_test,model_dic,params):
     logging.info("Itrating on model dic")
     report={}
     for model_name,model in model_dic.items():
-        with mlflow.start_run(run_name=model_name):
-            logging.info(f'fit the model {model_name}')
-            model.fit(x_train,y_train)
+        param_grid=params.get(model_name,{})
+        grid_search=GridSearchCV(estimator=model, param_grid=param_grid, 
+                                        scoring='accuracy', cv=5, verbose=1, n_jobs=-1)
 
-            logging.info(f'Predict the model {model_name}')
-            pre=model.predict(x_test)
+        # model.fit(x_train,y_train)
+        grid_search.fit(x_train,y_train)
 
-            logging.info(f'Cross Validation of the model {model_name} on training data')
-            train_score=cross_val_score(model,x_train,y_train,cv=5,scoring="accuracy",n_jobs=-1).mean()
+        best_model=grid_search.best_estimator_
+
+        # y_pred=model.predict(x_test)
+        y_pred=grid_search.predict(x_test)
+
+        logging.info(f'Cross Validation of the model {model_name} on training data')
+        train_score=cross_val_score(best_model,x_train,y_train,cv=5,scoring="accuracy",n_jobs=-1).mean()
             
-            logging.info(f'Cross Validation of the model {model_name} on testing data')
-            test_score=cross_val_score(model,x_test,y_test,cv=5,scoring="accuracy",n_jobs=-1).mean()
+        logging.info(f'Cross Validation of the model {model_name} on testing data')
+        test_score=cross_val_score(best_model,x_test,y_test,cv=5,scoring="accuracy",n_jobs=-1).mean()
             
-            logging.info(f'Final report of the model {model_name}')
-            full_report=generate_report(actual=y_test,pre=pre)
+        logging.info(f'Final report of the model {model_name}')
+        full_report=generate_report(actual=y_test,pre=y_pred)
 
-            # # Log parameters and metrics with MLflow
-            mlflow.log_param("model_name", model_name)
-            mlflow.log_metric("train_score", train_score)
-            mlflow.log_metric("test_score", test_score)
-            # mlflow.log_metrics(full_report)
-            
-            # # Log the model
-            mlflow.sklearn.log_model(model, model_name)
+            # Generate the classification report of the model
+        # class_report = classification_report(y_test, y_pred, output_dict=True)
 
-            report[model_name]={
+        report[model_name]={
                 "train_score":train_score,
                 "test_score":test_score,
-                "full_report":full_report
-            }
+                "full_report":full_report,
+                # "class_report":class_report
+        }
     
-    return report
+    # Sorting the report dictionary based on test_score
+    sorted_report = dict(sorted(report.items(), key=lambda item: item[1]['test_score'], reverse=True))
+    
+    return sorted_report
 
 
 
