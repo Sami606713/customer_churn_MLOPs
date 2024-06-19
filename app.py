@@ -93,7 +93,3 @@ if st.button("Predict"):
     elif(result[0]==1):
         st.error("Customer can leave the platform")
     
-    
-
-
-
