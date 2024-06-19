@@ -15,8 +15,8 @@ def prediction(data):
     processor=load_processor()
     transform_data=processor.transform(data)
 
-    # # Do the predicton
-    # model=load_model()
-    # y_pre=model.predict(transform_data)
+    # Do the predicton
+    model=load_model()
+    y_pred=model.predict(transform_data)
 
-    return transform_data
+    return y_pred
