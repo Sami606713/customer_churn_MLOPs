@@ -65,6 +65,7 @@ def inisiate_data_transformation(train_path,test_path):
         ("Num_transformation",num_pipe,num_col),
         ("Cat_transform",cat_pipe,cat_col)
     ],remainder="passthrough")
+    
 
     logging.info("Tranform train data")
     x_train_transform=processor.fit_transform(x_train)
@@ -83,6 +84,8 @@ def inisiate_data_transformation(train_path,test_path):
         x_test_transform,np.array(y_test)
     ]
     
+    save_file(file_path=processor_path,obj=processor)
+    logging.info(f"Processor save in this location {processor_path}")
     return[
         train_array,
         test_array,
