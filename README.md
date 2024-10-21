@@ -21,65 +21,20 @@ The goal of this project is to identify customers who are likely to leave (churn
     - After building the pipelines, combine them using `ColumnTransformer`.
 
 ## Model Building
-- In this step, we use the transformed data to train different models, such as:
-```python
-models = {
-    "Lr": LogisticRegression(verbose=1, n_jobs=-1),
-    "Dt": DecisionTreeClassifier(),
-    "RF": RandomForestClassifier(verbose=1, n_jobs=-1),
-    "xgboost": XGBClassifier(),  
-    "knn": KNeighborsClassifier(n_jobs=-1)  
-}
-```
-- Models Paramters
-```python
-params = {
-    "Lr": {
-        'penalty': ['l2', 'l1'],
-        'C': [0.1, 0.01, 0.001],
-        'class_weight': ["balanced", None],
-        'solver': ['newton-cholesky', 'liblinear']
-    },
-    "Dt": {
-        "criterion": ['gini', 'entropy', 'log_loss'],
-        'max_depth': [10, 20, 30, 50],
-        'min_samples_split': [2, 3, 4],
-        'min_samples_leaf': [1, 2],
-        'max_leaf_nodes': [2, None],
-        'class_weight': ['balanced', None, 'balanced_subsample']
-    },
-    "RF": {
-        'n_estimators': [100, 200, 300],
-        'criterion': ['gini', 'entropy', 'log_loss'],
-        'max_depth': [10, 20, 30, 50],
-        'min_samples_split': [2, 3, 4],
-        'min_samples_leaf': [1, 2],
-        'bootstrap': [True, False],
-        'oob_score': [True, False],
-        'class_weight': ['balanced', None, 'balanced_subsample']
-    },
-    "xgboost": {
-        "n_estimators": [50, 100, 200],
-        "max_depth": [3, 5, 10],
-        "learning_rate": [0.01, 0.1, 0.2],
-        "subsample": [0.6, 0.8, 1.0],
-        "colsample_bytree": [0.6, 0.8, 1.0],
-        "gamma": [0, 0.1, 0.2]
-    },
-    "knn": {
-        'n_neighbors': [5, 7, 9, 15],
-        'weights': ['uniform', 'distance']
-    }
-}
-```
+- In this step, we use the transformed data to train different models, after traing the model we can get the best model and then use for prediction.
 
 # Use Case
-- First install `requirement.txt` file.
-python```
+- Clone the repo
+```bash
+git clone https://github.com/Sami606713/customer_churn_MLOPs
+  ```
+
+- Install Dependencies
+```bash
 pip install -r requirements.txt
-```
+  ```
 
 - Second run the webapp.
-```python
+```bash
 streamlit run app.py
-```
+  ```
